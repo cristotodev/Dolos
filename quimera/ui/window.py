@@ -17,7 +17,7 @@ from gi.repository import Gtk, Adw, Gio
 
 from quimera.constants import rootdir, app_id
 from quimera.ui.sidebar_option import SidebarOptionBox
-from quimera.utils.generator import Generator
+from quimera.utils.generator import Generator, GeneratorType
 
 
 @Gtk.Template(resource_path=f"{rootdir}/ui/window.ui")
@@ -63,7 +63,9 @@ class QuimeraMainWindow(Adw.ApplicationWindow):
 
 
     def on_generate_action_activate(self, _):
-        print(self.sidebar_option_boxes)
+        for sidebar_option in self.sidebar_option_boxes:
+            if not sidebar_option.is_empty_key():
+                print(Generator.generate(sidebar_option.get_type())) # TODO Ver como pasar la información. Generar un objeto para posteriormente hacerlo recursivo
 
     
     def set_button_status(self):

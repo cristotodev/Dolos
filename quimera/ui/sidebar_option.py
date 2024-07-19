@@ -16,7 +16,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from gi.repository import Gtk, GObject
-from quimera.constants import rootdir, app_id
+from quimera.constants import rootdir
+from quimera.utils.generator import GeneratorType
 
 @Gtk.Template(resource_path=f"{rootdir}/ui/sidebar-option.ui")
 class SidebarOptionBox(Gtk.Box):
@@ -25,7 +26,7 @@ class SidebarOptionBox(Gtk.Box):
     text_input = Gtk.Template.Child()
     dropdown = Gtk.Template.Child()
     list_types = Gtk.Template.Child()
-    list_options = ['Option 1', 'Option 2']
+    list_options: list[GeneratorType] = [type.name for type in GeneratorType]
     old_text = ""
 
     __gsignals__ = {
@@ -54,8 +55,11 @@ class SidebarOptionBox(Gtk.Box):
             self.list_types.append(option)
 
 
-    def get_key(self):
+    def get_key(self) -> str:
         return self.text_input.get_text()
+    
+    def is_empty_key(self) -> bool:
+        return self.get_key().strip() == ""
 
-    def get_type(self):
-        return self.dropdown.get_selected_item().get_string()
+    def get_type(self) -> GeneratorType:
+        return GeneratorType[self.dropdown.get_selected_item().get_string()]

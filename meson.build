@@ -35,7 +35,7 @@ if not PY_INSTALLDIR.found()
 endif
 
 # Install Faker using pip during configuration
-run_command(PY_INSTALLDIR, '-m', 'pip', 'install', 'Faker==13.3.4', check: true)
+run_command(PY_INSTALLDIR, '-m', 'pip', 'install', 'Faker==16.0.0', check: true)
 
 PKGDATA_DIR = join_paths(get_option('prefix'), get_option('datadir'), meson.project_name())
 MODULE_DIR = join_paths(PKGDATA_DIR, meson.project_name())
