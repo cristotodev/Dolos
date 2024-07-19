@@ -1,0 +1,19 @@
+using Gtk 4.0;
+
+template $SidebarOptionBox : Gtk.Box {
+  orientation: vertical;
+  margin-top: 10;
+
+  Gtk.Grid grid {
+    column-spacing: 10;
+    column-homogeneous: true;
+
+    Gtk.Entry text_input {
+      placeholder-text: "Key";
+    }
+
+    Gtk.DropDown dropdown {
+      model: Gtk.StringList list_types {};
+    }
+  }
+}

@@ -1,0 +1,88 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $QuimeraMainWindow : Adw.ApplicationWindow {
+  styles ["devel"]
+  title: _("My Application");
+  default-width: 800;
+  default-height: 600;
+
+  Adw.ToastOverlay {
+    Adw.Leaflet leaflet {
+      can-navigate-back: true;
+      can-unfold: false;
+
+      Gtk.Box {
+        orientation: vertical;
+
+        Adw.HeaderBar titlebar {
+          centering-policy: strict;
+
+          [title]
+          Adw.ViewSwitcherTitle title {
+            stack: view_stack;
+          }
+          [end]
+          Gtk.MenuButton {
+            tooltip-text: _("Main Menu");
+            icon-name: "open-menu-symbolic";
+            menu-model: main-menu;
+          }
+        }
+
+        Gtk.Box main_content {
+          orientation: vertical;
+          Adw.ViewStack view_stack {
+            hexpand: true;
+          }
+
+          Adw.ViewSwitcherBar {
+            stack: view_stack;
+            reveal: bind title.title-visible;
+          }
+
+          Adw.OverlaySplitView overlay_split_view {
+            vexpand: true;
+            hexpand: true;
+
+            content: Gtk.Label {
+              label: _("Main Content");
+            };
+
+            sidebar: Gtk.Box sidebar_box {
+              orientation: vertical;
+              margin-start: 10;
+              margin-end: 10;
+
+              Gtk.Button generate_button {
+                hexpand: true;
+                margin-top: 20;
+                label: _("Generate");
+              }
+            };
+          }
+        }
+      }
+    }
+  }
+}
+
+menu main-menu {
+  section {
+    item {
+      label: _("Preferences");
+      action: "app.preferences";
+    }
+
+    item {
+      label: _("Keyboard Shortcuts");
+      action: "win.show-help-overlay";
+    }
+
+    item {
+      label: _("About");
+      action: "app.about";
+    }
+  }
+}
+
