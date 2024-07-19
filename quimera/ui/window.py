@@ -17,6 +17,7 @@ from gi.repository import Gtk, Adw, Gio
 
 from quimera.constants import rootdir, app_id
 from quimera.ui.sidebar_option import SidebarOptionBox
+from quimera.utils.generator import Generator
 
 
 @Gtk.Template(resource_path=f"{rootdir}/ui/window.ui")

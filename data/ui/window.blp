@@ -19,9 +19,11 @@ template $QuimeraMainWindow : Adw.ApplicationWindow {
           centering-policy: strict;
 
           [title]
-          Adw.ViewSwitcherTitle title {
-            stack: view_stack;
+          Gtk.Label custom_title {
+            label: _("Quimera");
+            hexpand: true;
           }
+
           [end]
           Gtk.MenuButton {
             tooltip-text: _("Main Menu");
@@ -38,7 +40,6 @@ template $QuimeraMainWindow : Adw.ApplicationWindow {
 
           Adw.ViewSwitcherBar {
             stack: view_stack;
-            reveal: bind title.title-visible;
           }
 
           Adw.OverlaySplitView overlay_split_view {

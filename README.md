@@ -1,4 +1,4 @@
-<p align="center"><img src="data/icons/hicolor/scalable/apps/dev.cristoto.Quimera.svg" width="256" height="256" alt=""></p>
+<p align="center"><img src="data/icons/org.cristoto.Quimera.svg" width="256" height="256" alt=""></p>
 
 <h1 align="center">Quimera</h1>
 <p align="center">Generate Fake Data.</p>
