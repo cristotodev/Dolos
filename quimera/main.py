@@ -16,7 +16,7 @@
 import sys
 import os
 
-from gi.repository import Gio, Adw
+from gi.repository import Gio, Adw, GtkSource, GObject
 
 from quimera.ui.window import QuimeraMainWindow
 from quimera.constants import rootdir, app_id
@@ -29,6 +29,8 @@ class QuimeraApplication(Adw.Application):
 
     def __init__(self):
         super().__init__(application_id=app_id, flags=Gio.ApplicationFlags.FLAGS_NONE)
+        GObject.type_register(GtkSource.View)
+        GObject.type_register(GtkSource.Buffer)
         self.set_resource_base_path(rootdir)
         self.style_manager = Adw.StyleManager.get_default()
         self.settings = Gio.Settings.new(app_id)
