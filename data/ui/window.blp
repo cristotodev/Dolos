@@ -1,5 +1,6 @@
 using Gtk 4.0;
 using Adw 1;
+using GtkSource 5;
 
 template $QuimeraMainWindow : Adw.ApplicationWindow {
   styles ["devel"]
@@ -7,7 +8,7 @@ template $QuimeraMainWindow : Adw.ApplicationWindow {
   default-width: 800;
   default-height: 600;
 
-  Adw.ToastOverlay {
+  Adw.ToastOverlay toast_overlay{
     Adw.Leaflet leaflet {
       can-navigate-back: true;
       can-unfold: false;
@@ -46,8 +47,30 @@ template $QuimeraMainWindow : Adw.ApplicationWindow {
             vexpand: true;
             hexpand: true;
 
-            content: Gtk.Label {
-              label: _("Main Content");
+            content: Gtk.Notebook {
+              show-border: false;
+
+              Gtk.NotebookPage {
+                tab: Gtk.Label {
+                  label: _("JSON");
+                };
+
+                child: Gtk.ScrolledWindow {
+                  hexpand: true;
+                  vexpand: true;
+
+                  GtkSource.View json_generate {
+                    top-margin: 10;
+                    bottom-margin: 10;
+                    left-margin: 10;
+                    right-margin: 10;
+                    smart-backspace: true;
+                    monospace: true;
+
+                    buffer: GtkSource.Buffer {};
+                  }
+                };
+              }
             };
 
             sidebar: Gtk.Box sidebar_box {
@@ -86,4 +109,3 @@ menu main-menu {
     }
   }
 }
-

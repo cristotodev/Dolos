@@ -14,6 +14,7 @@ python = import('python')
 # Dependencies
 glib_dep = dependency('glib-2.0')
 gtk_dep = dependency('gtk4', version: '>= 4.5.0')
+gtksource_dep = dependency('gtksourceview-5', version: '>=5.4')
 libadwaita_dep = dependency('libadwaita-1', version: '>= 1.2')
 pygobject_dep = dependency('pygobject-3.0', version: '>= 3.42.0')
 

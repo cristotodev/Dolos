@@ -13,7 +13,7 @@
 #
 #
 
-from gi.repository import Gtk, Adw, Gio
+from gi.repository import Gtk, Adw, Gio, GtkSource
 
 from quimera.constants import rootdir, app_id
 from quimera.ui.sidebar_option import SidebarOptionBox
@@ -24,6 +24,7 @@ from quimera.utils.generator import Generator, GeneratorType
 class QuimeraMainWindow(Adw.ApplicationWindow):
     __gtype_name__ = "QuimeraMainWindow"
 
+    toast_overlay = Gtk.Template.Child()
     sidebar_box = Gtk.Template.Child()
     generate_button = Gtk.Template.Child()
     sidebar_option_boxes: list[SidebarOptionBox] = []
@@ -63,6 +64,11 @@ class QuimeraMainWindow(Adw.ApplicationWindow):
 
 
     def on_generate_action_activate(self, _):
+        if self.has_duplicate_keys():
+            toast = Adw.Toast.new("There are keys with the same value at the same level. Please review your data structure.")
+            toast.set_timeout(5)
+            self.toast_overlay.add_toast(toast)
+
         for sidebar_option in self.sidebar_option_boxes:
             if not sidebar_option.is_empty_key():
                 print(Generator.generate(sidebar_option.get_type())) # TODO Ver como pasar la información. Generar un objeto para posteriormente hacerlo recursivo
@@ -78,3 +84,6 @@ class QuimeraMainWindow(Adw.ApplicationWindow):
         # Save windows size
         self.settings.set_int("window-width", win_size.width)
         self.settings.set_int("window-height", win_size.height)
+
+    def has_duplicate_keys(self) -> bool:
+        return True
