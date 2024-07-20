@@ -13,19 +13,22 @@
 #
 #
 
-from gi.repository import Gtk, Adw, Gio
+from typing import Any
+from gi.repository import Gtk, Adw, Gio, GtkSource
 
 from quimera.constants import rootdir, app_id
 from quimera.ui.sidebar_option import SidebarOptionBox
-from quimera.utils.generator import Generator, GeneratorType
-
+from quimera.utils.generator import Generator
+import json
 
 @Gtk.Template(resource_path=f"{rootdir}/ui/window.ui")
 class QuimeraMainWindow(Adw.ApplicationWindow):
     __gtype_name__ = "QuimeraMainWindow"
 
+    toast_overlay = Gtk.Template.Child()
     sidebar_box = Gtk.Template.Child()
     generate_button = Gtk.Template.Child()
+    json_generate = Gtk.Template.Child()  # Añadir esta línea
     sidebar_option_boxes: list[SidebarOptionBox] = []
 
     def __init__(self, **kwargs):
@@ -34,10 +37,20 @@ class QuimeraMainWindow(Adw.ApplicationWindow):
         self.settings = Gio.Settings.new(app_id)
 
         self.add_element_to_sidebar(self.create_sidebar_option_box())
+        self.configure_json_editor_highlighting()
 
         # save settings on windows close
         self.connect("unrealize", self.save_window_props)
         self.generate_button.connect("clicked", self.on_generate_action_activate)
+
+
+    def configure_json_editor_highlighting(self):
+        buffer = self.json_generate.get_buffer()
+        lm = GtkSource.LanguageManager.get_default()
+        json_language = lm.get_language("json")
+        buffer.set_language(json_language)
+        buffer.set_highlight_syntax(True)
+        buffer.set_highlight_matching_brackets(True)
 
     def on_create_sidebar_option_box(self, _, __):
         new_siderbar_option_box = self.create_sidebar_option_box()
@@ -61,13 +74,30 @@ class QuimeraMainWindow(Adw.ApplicationWindow):
         self.sidebar_box.append(element)
         self.sidebar_box.append(self.generate_button)
 
-
     def on_generate_action_activate(self, _):
+        if self.has_duplicate_keys():
+            toast = Adw.Toast.new("There are keys with the same value at the same level. Please review your data structure.")
+            toast.set_timeout(5)
+            self.toast_overlay.add_toast(toast)
+            return
+
         for sidebar_option in self.sidebar_option_boxes:
             if not sidebar_option.is_empty_key():
-                print(Generator.generate(sidebar_option.get_type())) # TODO Ver como pasar la información. Generar un objeto para posteriormente hacerlo recursivo
+                self.write_json_to_view(self.generate_json())
 
-    
+    def write_json_to_view(self, data):
+        """Escribe un objeto JSON en el GtkSource.View usando UTF-8"""
+        json_str = json.dumps(data, indent=4, ensure_ascii=False)  # Asegura UTF-8
+        buffer = self.json_generate.get_buffer()
+        buffer.set_text(json_str)
+
+    def generate_json(self) -> dict[str, Any]:
+        return {
+            option.get_key(): Generator.generate(option.get_type())
+            for option in self.sidebar_option_boxes
+            if not option.is_empty_key()
+        }
+
     def set_button_status(self):
         self.generate_button.set_sensitive(not (len(self.sidebar_option_boxes) == 1 and self.sidebar_option_boxes[0].get_key() == ""))
 
@@ -75,6 +105,9 @@ class QuimeraMainWindow(Adw.ApplicationWindow):
         """Save windows and column information on windows close"""
         win_size = self.get_default_size()
 
-        # Save windows size
         self.settings.set_int("window-width", win_size.width)
         self.settings.set_int("window-height", win_size.height)
+
+    def has_duplicate_keys(self) -> bool:
+        seen_keys = set()
+        return any(option.get_key() in seen_keys or seen_keys.add(option.get_key()) for option in self.sidebar_option_boxes)

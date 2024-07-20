@@ -15,11 +15,45 @@ Quimera is a powerful tool designed to generate high-quality fake data, perfect 
 - **Cross-Platform Compatibility**: Works on Linux, Windows, and macOS, ensuring you can work on any operating system.
 
 
-### Dependencias
+## Building
 
-- Python 3.8+
-- GTK4
-- PyGObject
+### Meson
+
+Use this to build the application outside of a Flatpak image. Note that this method should
+only be used by power users, to package the application on build scripts for rolling-release
+distributions, or for development purposes.
+
+Currently, to build the application you'll have to make sure that the required
+libraries are installed on your system.
+
+* glib >= 2.72
+* gtk >= 4.14
+* gtksourceview >= 5.4
+* libadwaita >= 1.5
+
+Make sure that you have Meson in your system. For instance,
+
+```sh
+sudo apt install meson
+sudo dnf install meson
+sudo pacman -S meson
+```
+
+Then use the following commands to build and install the application
+
+```sh
+meson setup build
+ninja -C build
+ninja -C build install
+```
+
+To avoid installing system-wide the application, you can use a prefix:
+
+```sh
+meson setup build --prefix=/usr
+ninja -C build
+ninja -C build install
+```
 
 ## Contribution
 
