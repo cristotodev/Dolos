@@ -1,10 +1,10 @@
-project('quimera',
+project('dolos',
           version: '1.0',
     meson_version: '>= 0.59.0',
 )
 
-APPLICATION_ID = 'org.cristoto.Quimera'
-APPLICATION_ROOT = '/org/cristoto/Quimera'
+APPLICATION_ID = 'org.cristoto.Dolos'
+APPLICATION_ROOT = '/org/cristoto/Dolos'
 
 # Import modules
 gnome = import('gnome')

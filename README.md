@@ -1,11 +1,11 @@
-<p align="center"><img src="data/icons/org.cristoto.Quimera.svg" width="256" height="256" alt=""></p>
+<p align="center"><img src="data/icons/org.cristoto.Dolos.svg" width="256" height="256" alt=""></p>
 
-<h1 align="center">Quimera</h1>
+<h1 align="center">Dolos</h1>
 <p align="center">Generate Fake Data.</p>
 
-# Quimera
+# Dolos
 
-Quimera is a powerful tool designed to generate high-quality fake data, perfect for testing, prototyping, and simulations. Ideal for developers, data scientists, and AI professionals needing to populate databases with fictional data to test application functionality or perform preliminary analyses.
+Dolos is a powerful tool designed to generate high-quality fake data, perfect for testing, prototyping, and simulations. Ideal for developers, data scientists, and AI professionals needing to populate databases with fictional data to test application functionality or perform preliminary analyses.
 
 ## Main Features
 
@@ -61,12 +61,12 @@ We are committed to quality and inclusion in our project. If you're interested i
 
 ## License
 
-Quimera is licensed under the GNU General Public License v3.0 or later.
+Dolos is licensed under the GNU General Public License v3.0 or later.
 
 ## Credits and Acknowledgements
 
-Quimera is maintained by Cristo. Many thanks to all contributors and users for their support and feedback.
+Dolos is maintained by Cristo. Many thanks to all contributors and users for their support and feedback.
 
 ## Blog
 
-Follow the development of Quimera on the [cristoto.dev](https://www.cristoto.dev/blog).
+Follow the development of Dolos on the [cristoto.dev](https://www.cristoto.dev/blog).

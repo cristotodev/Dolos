@@ -36,7 +36,7 @@ locale.textdomain("@APP_NAME@")
 
 if __name__ == "__main__":
     if is_local:
-        # In the local use case, use quimera module from the sourcetree
+        # In the local use case, use dolos module from the sourcetree
         sys.path.insert(1, "@PYTHON@")
 
         # In the local use case the installed schemas go in <builddir>/share
@@ -45,8 +45,8 @@ if __name__ == "__main__":
         )
 
         shutil.copyfile(
-            os.path.join("@BUILD_DIR@", "quimera", "constants.py"),
-            os.path.join("@SOURCE_DIR@", "quimera", "constants.py"),
+            os.path.join("@BUILD_DIR@", "dolos", "constants.py"),
+            os.path.join("@SOURCE_DIR@", "dolos", "constants.py"),
         )
 
     import gi
@@ -60,6 +60,6 @@ if __name__ == "__main__":
     resource = Gio.Resource.load(os.path.join(pkgdatadir, "@APP_NAME@.gresource"))
     Gio.Resource._register(resource)
 
-    from quimera import main
+    from dolos import main
 
     sys.exit(main.main())

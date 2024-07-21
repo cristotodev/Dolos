@@ -16,8 +16,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from gi.repository import Gtk, GObject
-from quimera.constants import rootdir
-from quimera.utils.generator import GeneratorType
+from dolos.constants import rootdir
+from dolos.utils.generator import GeneratorType
 
 @Gtk.Template(resource_path=f"{rootdir}/ui/sidebar-option.ui")
 class SidebarOptionBox(Gtk.Box):

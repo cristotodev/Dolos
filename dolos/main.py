@@ -18,14 +18,14 @@ import os
 
 from gi.repository import Gio, Adw, GtkSource, GObject
 
-from quimera.ui.window import QuimeraMainWindow
-from quimera.constants import rootdir, app_id
+from dolos.ui.window import DolosMainWindow
+from dolos.constants import rootdir, app_id
 
 
-class QuimeraApplication(Adw.Application):
+class DolosApplication(Adw.Application):
     """The main application class."""
 
-    __gtype_name__ = "QuimeraApplication"
+    __gtype_name__ = "DolosApplication"
 
     def __init__(self):
         super().__init__(application_id=app_id, flags=Gio.ApplicationFlags.FLAGS_NONE)
@@ -44,7 +44,7 @@ class QuimeraApplication(Adw.Application):
 
         self.win = self.props.active_window
         if not self.win:
-            self.win = QuimeraMainWindow(
+            self.win = DolosMainWindow(
                 application=self,
                 default_height=self.settings.get_int("window-height"),
                 default_width=self.settings.get_int("window-width"),
@@ -71,15 +71,15 @@ class QuimeraApplication(Adw.Application):
 
     def on_about(self, *_args):
         about = Adw.AboutWindow(transient_for=self.props.active_window,
-                                application_name='Quimera',
+                                application_name='Dolos',
                                 application_icon= app_id,
                                 developer_name='Cristo Manuel Estévez Hernández',
                                 version='0.1.0',
                                 developers=['Cristo Manuel Estévez Hernández'],
                                 copyright='© 2024 Cristo Manuel Estévez Hernández',
-                                website='https://github.com/cristotodev/Quimera',
-                                issue_url = "https://github.com/cristotodev/Quimera/issues",
-                                support_url = "https://github.com/cristotodev/Quimera/discussions")
+                                website='https://github.com/cristotodev/Dolos',
+                                issue_url = "https://github.com/cristotodev/Dolos/issues",
+                                support_url = "https://github.com/cristotodev/Dolos/discussions")
         about.present()
 
     def on_preferences(self, *_args):
@@ -88,5 +88,5 @@ class QuimeraApplication(Adw.Application):
 
 def main():
     """The application's entry point."""
-    app = QuimeraApplication()
+    app = DolosApplication()
     return app.run(sys.argv)
