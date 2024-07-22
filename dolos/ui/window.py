@@ -27,6 +27,7 @@ class DolosMainWindow(Adw.ApplicationWindow):
 
     toast_overlay = Gtk.Template.Child()
     sidebar_box = Gtk.Template.Child()
+    number_elements = Gtk.Template.Child()
     generate_button = Gtk.Template.Child()
     json_generate = Gtk.Template.Child()
     sidebar_option_boxes: list[SidebarOptionBox] = []
@@ -50,7 +51,7 @@ class DolosMainWindow(Adw.ApplicationWindow):
         
     def load_css(self):
         css_provider = Gtk.CssProvider()
-        css_provider.load_from_path(f"{rootdir}/styles.css")
+        css_provider.load_from_path(f"{rootdir}/style.css")
         
         Gtk.StyleContext.add_provider_for_display(
             Gdk.Display.get_default(),
@@ -106,13 +107,20 @@ class DolosMainWindow(Adw.ApplicationWindow):
         buffer = self.json_generate.get_buffer()
         buffer.set_text(json_str)
 
-    #TODO Generate a list of JSON and add set number of elements to generate on view
-    def generate_json(self) -> dict[str, Any]:
-        return {
-            option.get_key(): Generator.generate(option.get_type())
-            for option in self.sidebar_option_boxes
-            if not option.is_empty_key()
-        }
+    def generate_json(self) -> list[dict[str, Any]]:
+        quantity = int(self.number_elements.get_value())
+        result:list[dict[str, Any]] = []
+
+        for _ in range(0, quantity):
+            object = {}
+            for option in self.sidebar_option_boxes:
+                if not option.is_empty_key():
+                    object[option.get_key()] = Generator.generate(option.get_type())
+
+            result.append(object)
+
+        return result
+
 
     def _set_button_status(self):
         self.generate_button.set_sensitive(not (len(self.sidebar_option_boxes) == 1 and self.sidebar_option_boxes[0].get_key() == ""))

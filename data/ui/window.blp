@@ -66,6 +66,7 @@ template $DolosMainWindow : Adw.ApplicationWindow {
                     right-margin: 10;
                     smart-backspace: true;
                     monospace: true;
+                    editable: false;
 
                     buffer: GtkSource.Buffer {};
                   }
@@ -77,6 +78,17 @@ template $DolosMainWindow : Adw.ApplicationWindow {
               orientation: vertical;
               margin-start: 10;
               margin-end: 10;
+
+              Adw.SpinRow number_elements{
+                title: _("Quantity");
+                adjustment: Gtk.Adjustment {
+                  lower: 1;
+                  upper: 10000;
+                  value: 50;
+                  page-increment: 10;
+                  step-increment: 1;
+                };
+              }
 
               Gtk.Button generate_button {
                 hexpand: true;
