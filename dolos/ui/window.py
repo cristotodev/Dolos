@@ -14,7 +14,7 @@
 #
 
 from typing import Any
-from gi.repository import Gtk, Adw, Gio, Gdk
+from gi.repository import Gtk, Adw, Gio, Gdk, GLib
 
 from dolos.constants import rootdir, app_id
 from dolos.ui.sidebar_option import SidebarOptionBox
@@ -30,7 +30,9 @@ class DolosMainWindow(Adw.ApplicationWindow):
     sidebar_box = Gtk.Template.Child()
     number_elements = Gtk.Template.Child()
     generate_button = Gtk.Template.Child()
+    export_button = Gtk.Template.Child()
     sidebar_option_boxes: list[SidebarOptionBox] = []
+    buffer = None
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -41,6 +43,7 @@ class DolosMainWindow(Adw.ApplicationWindow):
         self.overlay_split_view.set_content(self.response_panel)
 
         self._add_element_to_sidebar(self.create_sidebar_option_box())
+        self._change_export_button_status()
 
         self.load_css()
 
@@ -48,8 +51,78 @@ class DolosMainWindow(Adw.ApplicationWindow):
 
         self.connect("unrealize", self.save_window_props)
         self.generate_button.connect("clicked", self._on_generate_action_activate)
+        self.export_button.connect("clicked", self._on_export_button_activate)
+
+        self.app.create_action("export_json", self._on_export_json)
+        self.app.create_action("export_csv", self._on_export_csv)
 
         #TODO ShortCuts para el botón guardar
+
+    def _on_export_csv(self, *_):
+        print("csv")
+
+    def _on_export_json(self, *_):
+        self.export_response()
+
+    def is_response_buffer_empty(self) -> bool:
+        if not self.buffer:
+            return False
+        
+        text = self.buffer.get_text(self.buffer.get_start_iter(), self.buffer.get_end_iter(), True)
+        return not text.strip()
+
+
+    def _on_export_button_activate(self, _):
+        self._on_export_json(None)
+
+    def export_response(self, extension = "json"):
+        if self.is_response_buffer_empty():
+            self.show_error_toast("There is not JSON to export. Please generate one first")
+            return
+
+        file_dialog = Gtk.FileDialog()
+        file_dialog.set_title(title='Save')
+        file_dialog.set_initial_name(name=f'dolos.{extension}')
+        file_dialog.set_modal(modal=True)
+        file_dialog.save(self, None, self.on_file_dialog_dismissed)
+
+    def on_file_dialog_dismissed(self, file_dialog, gio_task):
+        local_file = file_dialog.save_finish(gio_task)
+        if local_file is not None:
+            self.save_file(file=local_file)
+
+    def save_file(self, file): 
+        start = self.buffer.get_start_iter()
+        end = self.buffer.get_end_iter()
+        text = self.buffer.get_text(start, end, False)
+
+        if not text:
+            return
+        
+        bytes = GLib.Bytes.new(text.encode('utf-8'))
+        file.replace_contents_bytes_async(bytes,
+                                      None,
+                                      False,
+                                      Gio.FileCreateFlags.NONE,
+                                      None,
+                                      self.save_file_complete)
+        
+        
+    def save_file_complete(self, file, result):
+        res = file.replace_contents_finish(result)
+        info = file.query_info("standard::display-name",
+                            Gio.FileQueryInfoFlags.NONE)
+        if info:
+            display_name = info.get_attribute_string("standard::display-name")
+        else:
+            display_name = file.get_basename()
+        if not res:
+            self.show_error_toast(f"Unable to save {display_name}")
+
+    def show_error_toast(self, msg: str):
+        toast = Adw.Toast.new(f"Unable to save {msg}")
+        toast.set_timeout(5)
+        self.toast_overlay.add_toast(toast)
         
     def load_css(self):
         css_provider = Gtk.CssProvider()
@@ -83,14 +156,15 @@ class DolosMainWindow(Adw.ApplicationWindow):
 
     def _on_generate_action_activate(self, _):
         if self._has_duplicate_keys():
-            toast = Adw.Toast.new("There are keys with the same value at the same level. Please review your data structure.")
-            toast.set_timeout(5)
-            self.toast_overlay.add_toast(toast)
+            self.show_error_toast(f"Unable to save There are keys with the same value at the same level. Please review your data structure.")
             return
 
         for sidebar_option in self.sidebar_option_boxes:
             if not sidebar_option.is_empty_key():
                 self.response_panel.write_json(self.generate_json())
+
+        self.buffer = self.response_panel.buffer
+        self._change_export_button_status()
 
     def generate_json(self) -> list[dict[str, Any]]:
         quantity = int(self.number_elements.get_value())
@@ -109,6 +183,10 @@ class DolosMainWindow(Adw.ApplicationWindow):
 
     def _set_button_status(self):
         self.generate_button.set_sensitive(not (len(self.sidebar_option_boxes) == 1 and self.sidebar_option_boxes[0].get_key() == ""))
+
+    def _change_export_button_status(self):
+        print
+        self.export_button.set_sensitive(not self.buffer is None)
 
     def save_window_props(self, *args):
         """Save windows and column information on windows close"""

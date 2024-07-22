@@ -16,7 +16,7 @@
 import sys
 import os
 
-from gi.repository import Gio, Adw, GtkSource, GObject
+from gi.repository import Gio, Adw, GtkSource, GObject, GLib
 
 from dolos.ui.window import DolosMainWindow
 from dolos.constants import rootdir, app_id
@@ -54,7 +54,7 @@ class DolosApplication(Adw.Application):
             self.create_action("preferences", self.on_preferences)
         self.win.present()
 
-    def create_action(self, name, callback, shortcuts=None):
+    def create_action(self, name, callback, shortcuts=None, parameter_type=None):
         """Add an application action.
 
         Args:
@@ -63,7 +63,11 @@ class DolosApplication(Adw.Application):
             activated
             shortcuts: an optional list of accelerators
         """
-        action = Gio.SimpleAction.new(name, None)
+        
+        if parameter_type:
+            action = Gio.SimpleAction.new(name, GLib.VariantType.new(parameter_type))
+        else:
+            action = Gio.SimpleAction.new(name, None)
         action.connect("activate", callback)
         self.add_action(action)
         if shortcuts:

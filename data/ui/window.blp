@@ -92,16 +92,51 @@ template $DolosMainWindow : Adw.ApplicationWindow {
                 };
               }
 
-              Gtk.Button generate_button {
-                hexpand: true;
+              Gtk.Box {
+                orientation: horizontal;
                 margin-top: 20;
                 margin-bottom: 20;
-                label: _("Generate");
-              }
+                spacing: 10;
+
+                Gtk.Button generate_button {
+                  hexpand: true;
+                 
+                  label: _("Generate");
+                }
+
+                Adw.SplitButton export_button {
+                  halign: center;
+                  popover: export_menu;
+
+                  child: Adw.ButtonContent {
+                    icon-name: 'document-save-symbolic';
+                    label: _('_Save');
+                    use-underline: true;
+                  };
+                }
+              }              
             };
           }
         }
       }
+    }
+  }
+}
+
+PopoverMenu export_menu {
+  menu-model: options_export_menu;
+}
+
+menu options_export_menu {
+  section {
+    item {
+      label: _('JSON');
+       action: 'app.export_json';
+    }
+
+     item {
+      label: _('CSV');
+      action: 'app.export_csv';
     }
   }
 }

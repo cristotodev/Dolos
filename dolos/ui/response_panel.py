@@ -31,10 +31,6 @@ class DolosResponsePanel(Gtk.Notebook):
         super().__init__(**kwargs)
 
         self.configure_json_editor_highlighting()
-
-    def test(self, _,__):
-        print(_)
-        print(__)
        
     def configure_json_editor_highlighting(self):
         buffer = self.json_generate.get_buffer()
