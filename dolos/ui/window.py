@@ -14,22 +14,22 @@
 #
 
 from typing import Any
-from gi.repository import Gtk, Adw, Gio, GtkSource, Gdk
+from gi.repository import Gtk, Adw, Gio, Gdk
 
 from dolos.constants import rootdir, app_id
 from dolos.ui.sidebar_option import SidebarOptionBox
+from dolos.ui.response_panel import DolosResponsePanel
 from dolos.utils.generator import Generator
-import json
 
 @Gtk.Template(resource_path=f"{rootdir}/ui/window.ui")
 class DolosMainWindow(Adw.ApplicationWindow):
     __gtype_name__ = "DolosMainWindow"
 
+    overlay_split_view = Gtk.Template.Child()
     toast_overlay = Gtk.Template.Child()
     sidebar_box = Gtk.Template.Child()
     number_elements = Gtk.Template.Child()
     generate_button = Gtk.Template.Child()
-    json_generate = Gtk.Template.Child()
     sidebar_option_boxes: list[SidebarOptionBox] = []
 
     def __init__(self, **kwargs):
@@ -37,8 +37,10 @@ class DolosMainWindow(Adw.ApplicationWindow):
         self.app = kwargs["application"]
         self.settings = Gio.Settings.new(app_id)
 
+        self.response_panel = DolosResponsePanel()
+        self.overlay_split_view.set_content(self.response_panel)
+
         self._add_element_to_sidebar(self.create_sidebar_option_box())
-        self.configure_json_editor_highlighting()
 
         self.load_css()
 
@@ -59,15 +61,6 @@ class DolosMainWindow(Adw.ApplicationWindow):
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         )
 
-
-    def configure_json_editor_highlighting(self):
-        buffer = self.json_generate.get_buffer()
-        lm = GtkSource.LanguageManager.get_default()
-        json_language = lm.get_language("json")
-        buffer.set_language(json_language)
-        buffer.set_highlight_syntax(True)
-        buffer.set_highlight_matching_brackets(True)
-
     def _on_create_sidebar_option_box(self, _, __):
         new_siderbar_option_box = self.create_sidebar_option_box()
         self._add_element_to_sidebar(new_siderbar_option_box)
@@ -86,9 +79,7 @@ class DolosMainWindow(Adw.ApplicationWindow):
         self._set_button_status()
 
     def _add_element_to_sidebar(self, element):
-        self.sidebar_box.remove(self.generate_button)
         self.sidebar_box.append(element)
-        self.sidebar_box.append(self.generate_button)
 
     def _on_generate_action_activate(self, _):
         if self._has_duplicate_keys():
@@ -99,13 +90,7 @@ class DolosMainWindow(Adw.ApplicationWindow):
 
         for sidebar_option in self.sidebar_option_boxes:
             if not sidebar_option.is_empty_key():
-                self.write_json_to_view(self.generate_json())
-
-    def write_json_to_view(self, data):
-        """Escribe un objeto JSON en el GtkSource.View usando UTF-8"""
-        json_str = json.dumps(data, indent=4, ensure_ascii=False)  # Asegura UTF-8
-        buffer = self.json_generate.get_buffer()
-        buffer.set_text(json_str)
+                self.response_panel.write_json(self.generate_json())
 
     def generate_json(self) -> list[dict[str, Any]]:
         quantity = int(self.number_elements.get_value())

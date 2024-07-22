@@ -3,6 +3,7 @@
   <gresource prefix="@APP_ROOT@">
     <file preprocess="xml-stripblanks">ui/window.ui</file>
     <file preprocess="xml-stripblanks">ui/sidebar-option.ui</file>
+    <file preprocess="xml-stripblanks">ui/response-panel.ui</file>
     <file preprocess="xml-stripblanks" alias="gtk/help-overlay.ui">ui/shortcuts.ui</file>
     <file alias="style.css" compressed="true">style.css</file>
   </gresource>

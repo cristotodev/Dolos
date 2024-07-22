@@ -17,19 +17,31 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 using Gtk 4.0;
+using GtkSource 5;
+using Adw 1;
 
-ShortcutsWindow help_overlay {
-  ShortcutsSection {
-    section-name: "shortcuts";
-    max-height: 12;
+template $DolosResponsePanel: Gtk.Notebook {
+    show-border: false;
+    Gtk.NotebookPage {
+        tab: Gtk.Label {
+          label: _("JSON");
+        };
 
-    ShortcutsGroup {
-      title: _("General");
+        child: Gtk.ScrolledWindow {
+          hexpand: true;
+          vexpand: true;
 
-      ShortcutsShortcut {
-        title: _("Keyboard shortcuts");
-        action-name: "win.show-help-overlay";
-      }
+          GtkSource.View json_generate {
+            top-margin: 10;
+            bottom-margin: 10;
+            left-margin: 10;
+            right-margin: 10;
+            smart-backspace: true;
+            monospace: true;
+            editable: false;
+            
+            buffer: GtkSource.Buffer buffer {};
+          }
+        };
     }
-  }
 }
