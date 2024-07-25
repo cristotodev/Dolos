@@ -14,7 +14,7 @@
 #
 
 from typing import Any
-from gi.repository import Gtk, Adw, Gio, Gdk, GLib
+from gi.repository import Gtk, Adw, Gio, Gdk, GLib, GObject
 
 from dolos.constants import rootdir, app_id
 from dolos.ui.sidebar_option import SidebarOptionBox
@@ -49,7 +49,7 @@ class DolosMainWindow(Adw.ApplicationWindow):
         self.overlay_split_view.set_content(self.response_panel)
 
         self._add_element_to_sidebar(self.create_sidebar_option_box())
-        self._change_export_button_status()
+        self.notify("export-button-status")
 
         self.load_css()
 
@@ -68,13 +68,20 @@ class DolosMainWindow(Adw.ApplicationWindow):
         self.app.create_action("export_json", self._on_export_json)
         self.app.create_action("export_csv", self._on_export_csv)
 
+        self.bind_property("button-status", self.generate_button, "sensitive", GObject.BindingFlags.SYNC_CREATE)
+        self.bind_property("export-button-status", self.export_button, "sensitive", GObject.BindingFlags.SYNC_CREATE)
+
+    @GObject.Property(type=bool, default=False)
+    def export_button_status(self):
+        return self.buffer is not None
+
+    @GObject.Property(type=bool, default=False)
+    def button_status(self):
+        return not (len(self.sidebar_option_boxes) == 1 and self.sidebar_option_boxes[0].get_key() == "")
+
     def _on_setting_action_change_state(self, action, value, action_name):
         action.set_state(value)
         self.settings.set_boolean(action_name, value.get_boolean())
-
-
-    def _on_auto_indent_setting(self, *_):
-        print("eeee")
 
     def _on_export_csv(self, *_):
         print("csv")
@@ -88,7 +95,6 @@ class DolosMainWindow(Adw.ApplicationWindow):
         
         text = self.buffer.get_text(self.buffer.get_start_iter(), self.buffer.get_end_iter(), True)
         return not text.strip()
-
 
     def _on_export_button_activate(self, _):
         self._on_export_json(None)
@@ -161,13 +167,13 @@ class DolosMainWindow(Adw.ApplicationWindow):
         sidebar_option_box.connect('create_sidebar_option_box', self._on_create_sidebar_option_box)
         sidebar_option_box.connect('delete_sidebar_option_box', self._on_remove_sidebar_option_box)
         self.sidebar_option_boxes.append(sidebar_option_box)
-        self._set_button_status()
+        self.notify("button-status")
         return sidebar_option_box
 
     def _on_remove_sidebar_option_box(self, sidebar_option_box, _):
         self.sidebar_box.remove(sidebar_option_box)
         self.sidebar_option_boxes.remove(sidebar_option_box)
-        self._set_button_status()
+        self.notify("button-status")
 
     def _add_element_to_sidebar(self, element):
         self.sidebar_box.append(element)
@@ -182,7 +188,7 @@ class DolosMainWindow(Adw.ApplicationWindow):
                 self.response_panel.write_json(self.generate_json())
 
         self.buffer = self.response_panel.buffer
-        self._change_export_button_status()
+        self.notify("export-button-status")
 
     def generate_json(self) -> list[dict[str, Any]]:
         quantity = int(self.number_elements.get_value())
@@ -198,14 +204,6 @@ class DolosMainWindow(Adw.ApplicationWindow):
 
         return result
 
-
-    def _set_button_status(self):
-        self.generate_button.set_sensitive(not (len(self.sidebar_option_boxes) == 1 and self.sidebar_option_boxes[0].get_key() == ""))
-
-    def _change_export_button_status(self):
-        print
-        self.export_button.set_sensitive(not self.buffer is None)
-
     def save_window_props(self, *args):
         """Save windows and column information on windows close"""
         win_size = self.get_default_size()
@@ -216,3 +214,4 @@ class DolosMainWindow(Adw.ApplicationWindow):
     def _has_duplicate_keys(self) -> bool:
         seen_keys = set()
         return any(option.get_key() in seen_keys or seen_keys.add(option.get_key()) for option in self.sidebar_option_boxes)
+
