@@ -20,6 +20,7 @@ from dolos.constants import rootdir, app_id
 from dolos.ui.sidebar_option import SidebarOptionBox
 from dolos.ui.response_panel import DolosResponsePanel
 from dolos.utils.generator import Generator
+from dolos.utils.exporter import Exporter, ExportType
 
 @Gtk.Template(resource_path=f"{rootdir}/ui/window.ui")
 class DolosMainWindow(Adw.ApplicationWindow):
@@ -57,7 +58,7 @@ class DolosMainWindow(Adw.ApplicationWindow):
 
         self.connect("unrealize", self.save_window_props)
         self.generate_button.connect("clicked", self._on_generate_action_activate)
-        self.export_button.connect("clicked", self._on_export_button_activate)
+        self.export_button.connect("clicked", self._on_export_json)
 
         for action in self.actions:
             current_value = self.settings.get_boolean(action)
@@ -83,11 +84,27 @@ class DolosMainWindow(Adw.ApplicationWindow):
         action.set_state(value)
         self.settings.set_boolean(action_name, value.get_boolean())
 
-    def _on_export_csv(self, *_):
-        print("csv")
-
     def _on_export_json(self, *_):
-        self.export_response()
+        self.export(self.on_file_dialog_dismissed, extension="json")
+
+    def _on_export_csv(self, *_):
+        self.export(self.on_file_dialog_dismissed_csv, extension="csv")
+
+    def export(self, callback, extension:str = "json"):
+        if self.is_response_buffer_empty():
+            self.show_error_toast("There is no JSON to export. Please generate one first.")
+            return
+
+        file_dialog = Gtk.FileDialog()
+        file_dialog.set_title(title=f'Save {extension.upper()}')
+        file_dialog.set_initial_name(name=f'dolos.{extension}')
+        file_dialog.set_modal(modal=True)
+        file_dialog.save(self, None, callback)
+
+    def on_file_dialog_dismissed_csv(self, file_dialog, gio_task):
+        local_file = file_dialog.save_finish(gio_task)
+        if local_file is not None:
+            Exporter.export(local_file, self.buffer)
 
     def is_response_buffer_empty(self) -> bool:
         if not self.buffer:
@@ -96,52 +113,10 @@ class DolosMainWindow(Adw.ApplicationWindow):
         text = self.buffer.get_text(self.buffer.get_start_iter(), self.buffer.get_end_iter(), True)
         return not text.strip()
 
-    def _on_export_button_activate(self, _):
-        self._on_export_json(None)
-
-    def export_response(self, extension = "json"):
-        if self.is_response_buffer_empty():
-            self.show_error_toast("There is not JSON to export. Please generate one first")
-            return
-
-        file_dialog = Gtk.FileDialog()
-        file_dialog.set_title(title='Save')
-        file_dialog.set_initial_name(name=f'dolos.{extension}')
-        file_dialog.set_modal(modal=True)
-        file_dialog.save(self, None, self.on_file_dialog_dismissed)
-
     def on_file_dialog_dismissed(self, file_dialog, gio_task):
         local_file = file_dialog.save_finish(gio_task)
         if local_file is not None:
-            self.save_file(file=local_file)
-
-    def save_file(self, file): 
-        start = self.buffer.get_start_iter()
-        end = self.buffer.get_end_iter()
-        text = self.buffer.get_text(start, end, False)
-
-        if not text:
-            return
-        
-        bytes = GLib.Bytes.new(text.encode('utf-8'))
-        file.replace_contents_bytes_async(bytes,
-                                      None,
-                                      False,
-                                      Gio.FileCreateFlags.NONE,
-                                      None,
-                                      self.save_file_complete)
-        
-        
-    def save_file_complete(self, file, result):
-        res = file.replace_contents_finish(result)
-        info = file.query_info("standard::display-name",
-                            Gio.FileQueryInfoFlags.NONE)
-        if info:
-            display_name = info.get_attribute_string("standard::display-name")
-        else:
-            display_name = file.get_basename()
-        if not res:
-            self.show_error_toast(f"Unable to save {display_name}")
+            Exporter.export(file=local_file, buffer=self.buffer, type=ExportType.JSON)
 
     def show_error_toast(self, msg: str):
         toast = Adw.Toast.new(f"Unable to save {msg}")
