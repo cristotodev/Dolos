@@ -7,5 +7,17 @@
 		<key name="window-height" type="i">
 			<default>700</default>
 		</key>
+		<key name="body-wrap" type="b">
+			<default>true</default>
+			<summary>Wrap the body content</summary>
+		</key>
+		<key name="show-line-numbers" type="b">
+			<default>false</default>
+			<summary>Show line numbers in response JSON</summary>
+		</key>
+		<key name="indent-content" type="b">
+			<default>true</default>
+			<summary>Indent content in response JSON</summary>
+		</key>
 	</schema>
 </schemalist>

@@ -143,9 +143,25 @@ menu options_export_menu {
 
 menu main-menu {
   section {
-    item {
-      label: _("Preferences");
-      action: "app.preferences";
+    submenu {
+      label: _("Body appearance");
+
+      section {
+        item {
+          label: _("Wrap content");
+          action: "win.body-wrap";
+        }
+
+        item {
+          label: _("Show line numbers");
+          action: "win.show-line-numbers";
+        }
+
+        item {
+          label: _("Indent content");
+          action: "win.indent-content";
+        }
+      }
     }
 
     item {

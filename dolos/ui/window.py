@@ -25,6 +25,12 @@ from dolos.utils.generator import Generator
 class DolosMainWindow(Adw.ApplicationWindow):
     __gtype_name__ = "DolosMainWindow"
 
+    actions = [
+        "body-wrap",
+        "show-line-numbers",
+        "indent-content"
+    ]
+
     overlay_split_view = Gtk.Template.Child()
     toast_overlay = Gtk.Template.Child()
     sidebar_box = Gtk.Template.Child()
@@ -53,10 +59,22 @@ class DolosMainWindow(Adw.ApplicationWindow):
         self.generate_button.connect("clicked", self._on_generate_action_activate)
         self.export_button.connect("clicked", self._on_export_button_activate)
 
+        for action in self.actions:
+            current_value = self.settings.get_boolean(action)
+            new_action = Gio.SimpleAction.new_stateful(action, None, GLib.Variant.new_boolean(current_value))
+            new_action.connect("change-state", self._on_setting_action_change_state, action)
+            self.add_action(new_action)
+
         self.app.create_action("export_json", self._on_export_json)
         self.app.create_action("export_csv", self._on_export_csv)
 
-        #TODO ShortCuts para el botón guardar
+    def _on_setting_action_change_state(self, action, value, action_name):
+        action.set_state(value)
+        self.settings.set_boolean(action_name, value.get_boolean())
+
+
+    def _on_auto_indent_setting(self, *_):
+        print("eeee")
 
     def _on_export_csv(self, *_):
         print("csv")

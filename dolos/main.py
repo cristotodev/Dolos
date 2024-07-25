@@ -51,7 +51,6 @@ class DolosApplication(Adw.Application):
             )
             # create app actions
             self.create_action("about", self.on_about)
-            self.create_action("preferences", self.on_preferences)
         self.win.present()
 
     def create_action(self, name, callback, shortcuts=None, parameter_type=None):
@@ -85,9 +84,6 @@ class DolosApplication(Adw.Application):
                                 issue_url = "https://github.com/cristotodev/Dolos/issues",
                                 support_url = "https://github.com/cristotodev/Dolos/discussions")
         about.present()
-
-    def on_preferences(self, *_args):
-        print("preference")
 
 
 def main():
