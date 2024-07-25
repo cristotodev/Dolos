@@ -17,5 +17,5 @@
 
 install_data(
   '@0@.svg'.format(APPLICATION_ID),
-  install_dir: 'icons' / 'hicolor' / 'scalable' / 'apps'
+  install_dir: iconsdir / 'hicolor' / 'scalable' / 'apps'
 )

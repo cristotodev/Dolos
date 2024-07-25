@@ -36,9 +36,6 @@ if not PY_INSTALLDIR.found()
     error('No valid python3 binary found')
 endif
 
-# Install icons
-install_subdir('data/icons', install_dir: join_paths(datadir, 'icons/hicolor/scalable/apps'))
-
 # Install Faker using pip during configuration
 run_command(PY_INSTALLDIR, '-m', 'pip', 'install', 'Faker==16.0.0', check: true)
 
