@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Dolos
+Comment=Generate Fake Data.
+Type=Application
+Exec=dolos
+Terminal=false
+Categories=GNOME;GTK;Development
+Keywords=Gnome;GTK;JSON;CSV;
+Icon=@app_id@
+StartupNotify=true

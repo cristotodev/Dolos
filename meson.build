@@ -26,6 +26,7 @@ localedir = prefix / get_option('localedir')
 datadir = prefix / get_option('datadir')
 pkgdatadir = datadir / meson.project_name()
 iconsdir = datadir / 'icons'
+gettext_package = meson.project_name()
 
 # Python installation directory
 PY_INSTALLDIR = python.find_installation('python3', required: true)
@@ -56,6 +57,7 @@ conf.set('SCHEMAS_DIR', PKGDATA_DIR)
 conf.set('SOURCE_DIR', meson.current_source_dir())
 conf.set('BUILD_DIR', meson.current_build_dir())
 conf.set('local_build', 'False')
+
 
 # Local install configuration data
 local_conf = configuration_data()

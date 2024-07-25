@@ -1,0 +1,58 @@
+#
+#  <>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: dolos\n"
+"Report-Msgid-Bugs-To: https://github.com/cristotodev/Dolos/issues\n"
+"POT-Creation-Date: 2024-07-24 21:42+0200\n"
+"PO-Revision-Date: 2024-07-24 21:43+0200\n"
+"Last-Translator:  <>\n"
+"Language-Team: Spanish\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Gtranslator 46.1\n"
+
+
+#: data/dolos.desktop.in:3
+msgid "Dolos"
+msgstr "Dolos"
+
+#: data/org.cristoto.Dolos.gschema.xml:12
+msgid "Wrap the body content"
+msgstr ""
+
+#: data/ui/window.blp:85
+msgid "Quantity"
+msgstr ""
+
+#: data/ui/window.blp:104
+msgid "Generate"
+msgstr ""
+
+#: data/ui/window.blp:113
+msgid "_Save"
+msgstr ""
+
+#: data/ui/window.blp:147
+msgid "Body appearance"
+msgstr ""
+
+#: data/ui/window.blp:151
+msgid "Wrap content"
+msgstr ""
+
+#: data/ui/window.blp:156
+msgid "Show line numbers"
+msgstr ""
+
+#: data/ui/window.blp:161
+msgid "Indent content"
+msgstr ""
+
+#: data/ui/window.blp:173
+msgid "About"
+msgstr ""
