@@ -78,7 +78,7 @@ class DolosApplication(Adw.Application):
                                 application_name='Dolos',
                                 application_icon= app_id,
                                 developer_name='Cristo Manuel Estévez Hernández',
-                                version='0.1.0',
+                                version='1.0.0',
                                 developers=['Cristo Manuel Estévez Hernández'],
                                 copyright='© 2024 Cristo Manuel Estévez Hernández',
                                 website='https://github.com/cristotodev/Dolos',
