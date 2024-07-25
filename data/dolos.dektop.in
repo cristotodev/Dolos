@@ -6,5 +6,5 @@ Exec=dolos
 Terminal=false
 Categories=GNOME;GTK;Development
 Keywords=Gnome;GTK;JSON;CSV;
-Icon=@app_id@
+Icon=@APP_ID@
 StartupNotify=true

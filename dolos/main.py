@@ -73,6 +73,7 @@ class DolosApplication(Adw.Application):
             self.set_accels_for_action(f"app.{name}", shortcuts)
 
     def on_about(self, *_args):
+        print(app_id)
         about = Adw.AboutWindow(transient_for=self.props.active_window,
                                 application_name='Dolos',
                                 application_icon= app_id,
