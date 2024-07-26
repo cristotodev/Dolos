@@ -17,6 +17,24 @@ Dolos is a powerful tool designed to generate high-quality fake data, perfect fo
 
 ## Building
 
+### Flatpak
+
+Install the runtime:
+
+```sh
+flatpak install --user org.gnome.Sdk//46 org.freedesktop.Sdk.Extension.rust-stable//23.08
+```
+
+Install the Flatpak, possibly passing the `--user` parameter.
+
+```sh
+flatpak-builder --user --install flatpak_app build-aux/org.cristoto.Dolos.json
+```
+
+You will find Dolos in your application launcher, or you can launch it with
+`flatpak run org.cristoto.Dolos`.
+
+
 ### Meson
 
 Use this to build the application outside of a Flatpak image. Note that this method should

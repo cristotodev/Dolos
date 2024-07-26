@@ -45,6 +45,22 @@ PY_INSTALLDIR.install_sources(py_sources, subdir: meson.project_name() )
 ui_modules = [
 'ui/__init__.py',
 'ui/window.py',
+'ui/response_panel.py',
+'ui/sidebar_option.py',
 ]
 PY_INSTALLDIR.install_sources(ui_modules, subdir: meson.project_name() + '/ui')
 
+# Install utils Python modules
+utils_modules = [
+  'utils/__init__.py',
+  'utils/generator.py',
+  'utils/exporter.py',
+]
+PY_INSTALLDIR.install_sources(utils_modules, subdir: meson.project_name() + '/utils')
+
+# Install utils.errors Python modules
+utils_errors_modules = [
+  'utils/errors/__init__.py',
+  'utils/errors/export_error.py',
+]
+PY_INSTALLDIR.install_sources(utils_errors_modules, subdir: meson.project_name() + '/utils/errors')
