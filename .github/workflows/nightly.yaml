@@ -18,7 +18,7 @@
 on:
   push:
     branches:
-      - trunk
+      - main
 name: Nightly build
 jobs:
   flatpak:
